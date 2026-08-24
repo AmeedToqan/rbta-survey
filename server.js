@@ -1,9 +1,9 @@
-﻿const express = require("express");
+const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const DATA_FILE = path.join(__dirname, "responses.json");
 
@@ -117,7 +117,7 @@ app.delete("/api/responses", (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log("");
     console.log("RBTA Survey running:");
     console.log("http://localhost:" + PORT);
