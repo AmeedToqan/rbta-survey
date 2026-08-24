@@ -12,7 +12,7 @@ if (form) {
 
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = "???? ???????...";
+            submitButton.textContent = "\u062C\u0627\u0631\u064A \u0627\u0644\u0625\u0631\u0633\u0627\u0644...";
         }
 
         try {
@@ -35,11 +35,11 @@ if (form) {
 
             if (!response.ok) {
                 throw new Error(
-                    result.error || "???? ????? ????"
+                    result.error || "\u062A\u0639\u0630\u0631 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0631\u062F."
                 );
             }
 
-            alert("? ?? ????? ???? ?????? ????? ??!");
+            alert("\u062A\u0645 \u0625\u0631\u0633\u0627\u0644 \u0625\u062C\u0627\u0628\u062A\u0643 \u0628\u0646\u062C\u0627\u062D\u060C \u0634\u0643\u0631\u064B\u0627 \u0644\u0643!");
 
             form.reset();
 
@@ -48,8 +48,8 @@ if (form) {
             console.error("Submit error:", error);
 
             alert(
-                "? ???? ????? ????.\n\n" +
-                "???? ?? ?????? ???? ????? ??? ????."
+                "❌ تعذر إرسال الرد.\n\n" +
+                "تأكد أن الخادم يعمل وحاول مرة أخرى."
             );
 
         } finally {
@@ -61,5 +61,3 @@ if (form) {
         }
     });
 }
-
-
