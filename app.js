@@ -1,4 +1,4 @@
-﻿const form = document.querySelector("form");
+const form = document.querySelector("form");
 
 if (form) {
     form.addEventListener("submit", async function (e) {
@@ -12,7 +12,7 @@ if (form) {
 
         if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = "جاري الإرسال...";
+            submitButton.textContent = "???? ???????...";
         }
 
         try {
@@ -23,7 +23,7 @@ if (form) {
                 data[key] = value;
             });
 
-            const response = await fetch("/api/submit", {
+            const response = await fetch("/.netlify/functions/api/submit", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -35,11 +35,11 @@ if (form) {
 
             if (!response.ok) {
                 throw new Error(
-                    result.error || "تعذر إرسال الرد"
+                    result.error || "???? ????? ????"
                 );
             }
 
-            alert("✅ تم إرسال رأيك بنجاح، شكرًا لك!");
+            alert("? ?? ????? ???? ?????? ????? ??!");
 
             form.reset();
 
@@ -48,8 +48,8 @@ if (form) {
             console.error("Submit error:", error);
 
             alert(
-                "❌ تعذر إرسال الرد.\n\n" +
-                "تأكد أن الخادم يعمل وحاول مرة أخرى."
+                "? ???? ????? ????.\n\n" +
+                "???? ?? ?????? ???? ????? ??? ????."
             );
 
         } finally {
@@ -61,3 +61,5 @@ if (form) {
         }
     });
 }
+
+
