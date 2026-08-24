@@ -1,4 +1,4 @@
-﻿import { getStore } from "@netlify/blobs";
+import { getStore } from "@netlify/blobs";
 
 const store = getStore("rbta-responses");
 const ADMIN_KEY = process.env.RBTA_ADMIN_KEY || "rbta-admin";
@@ -34,7 +34,7 @@ async function getAllResponses() {
 
 export default async function handler(req) {
     const url = new URL(req.url);
-    const pathname = url.pathname;
+    const pathname = url.pathname.replace(/^\/api/, "").replace(/^\/\.netlify\/functions\/api/, "");
 
     try {
 
@@ -124,3 +124,4 @@ export default async function handler(req) {
         }, 500);
     }
 }
+
