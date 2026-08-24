@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رَبطة | لوحة الإدارة</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+    background:#f5f5f3;
+    color:#171717;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:35px 22px 60px;
+}
+
+.header{
+    background:#fff;
+    border:1px solid #e7e4de;
+    border-radius:22px;
+    padding:24px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,.04);
+}
+
+.brand h1{
+    margin:0;
+    font-size:27px;
+    font-weight:800;
+}
+
+.brand p{
+    margin:5px 0 0;
+    color:#888;
+    font-size:13px;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:11px 18px;
+    font:600 14px inherit;
+    cursor:pointer;
+}
+
+.refresh{
+    background:#171717;
+    color:#fff;
+}
+
+.login{
+    margin-top:25px;
+    background:#fff;
+    border:1px solid #e7e4de;
+    border-radius:20px;
+    padding:25px;
+    text-align:center;
+}
+
+.login input{
+    width:min(400px,100%);
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font:inherit;
+    margin:10px;
+    text-align:center;
+}
+
+.login button{
+    background:#171717;
+    color:white;
+}
+
+.hidden{display:none!important}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin:25px 0;
+}
+
+.stat{
+    background:#fff;
+    border:1px solid #e7e4de;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 8px 25px rgba(0,0,0,.03);
+}
+
+.stat .icon{
+    font-size:22px;
+}
+
+.stat .label{
+    color:#888;
+    font-size:13px;
+    margin-top:10px;
+}
+
+.stat .value{
+    font-size:28px;
+    font-weight:800;
+    margin-top:4px;
+}
+
+.panel{
+    background:#fff;
+    border:1px solid #e7e4de;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.panel-head{
+    padding:20px 22px;
+    border-bottom:1px solid #eee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.panel-head h2{
+    margin:0;
+    font-size:19px;
+}
+
+.status{
+    color:#777;
+    font-size:13px;
+}
+
+.table-wrap{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:950px;
+}
+
+th,td{
+    padding:15px;
+    border-bottom:1px solid #eee;
+    text-align:right;
+    vertical-align:top;
+}
+
+th{
+    background:#faf9f6;
+    font-size:13px;
+}
+
+td{
+    font-size:14px;
+}
+
+.rating{
+    font-weight:800;
+}
+
+.text{
+    max-width:220px;
+    white-space:normal;
+    line-height:1.7;
+}
+
+.empty{
+    text-align:center;
+    padding:60px 20px;
+    color:#888;
+}
+
+.error{
+    color:#b42318;
+    margin-top:12px;
+}
+
+@media(max-width:800px){
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+}
+
+@media(max-width:500px){
+    .stats{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+<style>
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.48);
+    backdrop-filter:blur(7px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:9999;
+    opacity:0;
+    visibility:hidden;
+    transition:.2s ease;
+}
+.modal-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+.modal{
+    width:min(430px,100%);
+    background:#fff;
+    border-radius:24px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 25px 80px rgba(0,0,0,.22);
+    transform:translateY(12px) scale(.97);
+    transition:.2s ease;
+}
+.modal-overlay.show .modal{
+    transform:translateY(0) scale(1);
+}
+.modal-icon{
+    width:62px;
+    height:62px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    background:#fff1f0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+.modal h3{
+    margin:0 0 10px;
+    font-size:21px;
+}
+.modal p{
+    margin:0;
+    color:#777;
+    line-height:1.8;
+    font-size:14px;
+}
+.modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:25px;
+}
+.modal-actions button{
+    flex:1;
+    padding:13px;
+    border-radius:13px;
+    font:700 14px inherit;
+}
+.cancel-delete{
+    background:#f4f3f0;
+    color:#222;
+}
+.confirm-delete{
+    background:#b42318;
+    color:#fff;
+}
+.success-toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(20px);
+    background:#171717;
+    color:#fff;
+    padding:13px 22px;
+    border-radius:14px;
+    box-shadow:0 15px 40px rgba(0,0,0,.2);
+    opacity:0;
+    visibility:hidden;
+    transition:.25s ease;
+    z-index:10000;
+    font-size:14px;
+}
+.success-toast.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="brand">
+            <h1>رَبطة — لوحة الإدارة</h1>
+            <p>إدارة ومتابعة نتائج الاستبيان ✦</p>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="refresh" onclick="loadData()">↻ تحديث البيانات</button><button onclick="deleteAll()" style="background:#b42318;color:#fff">🗑️ حذف جميع البيانات</button></div>
+    </div>
+
+    <div id="loginBox" class="login">
+        <h2>🔐 دخول لوحة الإدارة</h2>
+        <p>أدخل مفتاح الإدارة للوصول إلى الردود</p>
+
+        <input
+            id="key"
+            type="password"
+            placeholder="مفتاح الإدارة"
+            value="rbta-admin"
+        >
+
+        <br>
+
+        <button onclick="login()">دخول إلى اللوحة</button>
+
+        <div id="error" class="error"></div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="icon">👥</div>
+                <div class="label">إجمالي المشاركات</div>
+                <div class="value" id="total">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="icon">⭐</div>
+                <div class="label">متوسط تقييم الفكرة</div>
+                <div class="value" id="ideaAvg">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="icon">📱</div>
+                <div class="label">متوسط سهولة الاستخدام</div>
+                <div class="value" id="useAvg">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="icon">💬</div>
+                <div class="label">ردود مكتوبة</div>
+                <div class="value" id="written">0</div>
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <div class="panel-head">
+                <h2>آراء المشاركين</h2>
+                <span class="status" id="status">جاري التحميل...</span>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>الاسم</th>
+                            <th>الفكرة</th>
+                            <th>سهولة الاستخدام</th>
+                            <th>✨ أعجبني</th>
+                            <th>🛠️ التطوير</th>
+                            <th>💬 الملاحظات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let adminKey = "";
+
+function login(){
+    adminKey = document.getElementById("key").value.trim();
+
+    if(!adminKey){
+        document.getElementById("error").textContent =
+            "أدخل مفتاح الإدارة.";
+        return;
+    }
+
+    loadData();
+}
+
+async function loadData(){
+
+    if(!adminKey){
+        adminKey = document.getElementById("key").value.trim();
+    }
+
+    if(!adminKey){
+        document.getElementById("error").textContent =
+            "أدخل مفتاح الإدارة.";
+        return;
+    }
+
+    document.getElementById("status").textContent =
+        "جاري تحميل الردود...";
+
+    try{
+
+        const response = await fetch(
+            "/api/responses?key=" + encodeURIComponent(adminKey)
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error || "فشل تحميل البيانات");
+        }
+
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        render(data);
+
+    }catch(error){
+
+        document.getElementById("error").textContent =
+            "تعذر الوصول إلى البيانات: " + error.message;
+
+        document.getElementById("status").textContent =
+            "فشل التحميل";
+
+        console.error(error);
+    }
+}
+
+function render(data){
+
+    const total = data.length;
+
+    const ideaAvg =
+        total
+        ? data.reduce((sum,r)=>sum + Number(r.idea || 0),0) / total
+        : 0;
+
+    const useAvg =
+        total
+        ? data.reduce((sum,r)=>sum + Number(r.usability || 0),0) / total
+        : 0;
+
+    const written =
+        data.filter(r =>
+            r.liked ||
+            r.improve ||
+            r.notes
+        ).length;
+
+    document.getElementById("total").textContent = total;
+
+    document.getElementById("ideaAvg").textContent =
+        ideaAvg.toFixed(1) + " / 5";
+
+    document.getElementById("useAvg").textContent =
+        useAvg.toFixed(1) + " / 5";
+
+    document.getElementById("written").textContent = written;
+
+    const tbody = document.getElementById("tbody");
+
+    if(!data.length){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    لا توجد ردود حتى الآن.
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("status").textContent =
+            "لا توجد ردود";
+
+        return;
+    }
+
+    const sorted = [...data].reverse();
+
+    tbody.innerHTML = sorted.map(r => `
+
+        <tr>
+
+            <td>
+                ${formatDate(r.createdAt)}
+            </td>
+
+            <td>
+                <strong>${esc(r.name || "مجهول")}</strong>
+            </td>
+
+            <td class="rating">
+                ⭐ ${esc(r.idea)}/5
+            </td>
+
+            <td class="rating">
+                📱 ${esc(r.usability)}/5
+            </td>
+
+            <td class="text">
+                ${esc(r.liked || "—")}
+            </td>
+
+            <td class="text">
+                ${esc(r.improve || "—")}
+            </td>
+
+            <td class="text">
+                ${esc(r.notes || "—")}
+            </td>
+
+        </tr>
+
+    `).join("");
+
+    document.getElementById("status").textContent =
+        "تم تحميل " + total + " رد";
+}
+
+function formatDate(date){
+
+    if(!date) return "—";
+
+    return new Date(date).toLocaleString("ar-PS",{
+        dateStyle:"medium",
+        timeStyle:"short"
+    });
+}
+
+function esc(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+// تحميل تلقائي عند فتح الصفحة
+window.addEventListener("load", () => {
+    adminKey = "rbta-admin";
+    loadData();
+});
+
+function deleteAll(){
+    document.getElementById("deleteModal").classList.add("show");
+}
+
+function closeDeleteModal(){
+    document.getElementById("deleteModal").classList.remove("show");
+}
+
+async function confirmDelete(){
+
+    closeDeleteModal();
+
+    try{
+
+        const response = await fetch(
+            "/api/responses?key=" + encodeURIComponent(adminKey),
+            { method:"DELETE" }
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error || "??? ?????");
+        }
+
+        showToast("? ?? ??? ???? ???????? ?????");
+
+        loadData();
+
+    }catch(error){
+
+        showToast("? ???? ??? ????????");
+
+        console.error(error);
+    }
+}
+
+function showToast(message){
+
+    const toast=document.getElementById("toast");
+
+    toast.textContent=message;
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },3000);
+}
+
+async function oldDeleteAll(){
+
+    const confirmed = confirm(
+        "⚠️ تحذير\n\nهل أنت متأكد أنك تريد حذف جميع ردود الاستبيان؟\n\nلا يمكن التراجع عن هذا الإجراء."
+    );
+
+    if(!confirmed) return;
+
+    const secondConfirm = confirm(
+        "تأكيد أخير:\n\nسيتم حذف جميع البيانات نهائيًا."
+    );
+
+    if(!secondConfirm) return;
+
+    try{
+
+        const response = await fetch(
+            "/api/responses?key=" + encodeURIComponent(adminKey),
+            { method:"DELETE" }
+        );
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error || "فشل الحذف");
+        }
+
+        alert("✅ تم حذف جميع البيانات بنجاح.");
+
+        loadData();
+
+    }catch(error){
+
+        alert("❌ تعذر حذف البيانات: " + error.message);
+
+    }
+}
+
+</script>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-icon">??</div>
+        <h3>??? ???? ????????</h3>
+        <p>
+            ?? ??? ????? ?? ??? ???? ???? ??????????
+            <br>
+            <strong>?? ???? ??????? ?? ??? ???????.</strong>
+        </p>
+
+        <div class="modal-actions">
+            <button class="cancel-delete" onclick="closeDeleteModal()">
+                ?????
+            </button>
+
+            <button class="confirm-delete" onclick="confirmDelete()">
+                ???? ???? ????????
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="success-toast" id="toast"></div>
+
+<script>
+window.addEventListener("DOMContentLoaded", function () {
+
+    const modal = document.getElementById("deleteModal");
+
+    if (modal) {
+        const h3 = modal.querySelector("h3");
+        const p = modal.querySelector("p");
+        const cancel = modal.querySelector(".cancel-delete");
+        const confirm = modal.querySelector(".confirm-delete");
+        const icon = modal.querySelector(".modal-icon");
+
+        if (icon) icon.textContent = "\u26A0\uFE0F";
+
+        if (h3) {
+            h3.textContent = "\u062D\u0630\u0641 \u062C\u0645\u064A\u0639 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A";
+        }
+
+        if (p) {
+            p.innerHTML =
+                "\u0647\u0644 \u0623\u0646\u062A \u0645\u062A\u0623\u0643\u062F \u0645\u0646 \u062D\u0630\u0641 \u062C\u0645\u064A\u0639 \u0631\u062F\u0648\u062F \u0627\u0644\u0627\u0633\u062A\u0628\u064A\u0627\u0646\u061F" +
+                "<br><strong>\u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u062A\u0631\u0627\u062C\u0639 \u0639\u0646 \u0647\u0630\u0627 \u0627\u0644\u0625\u062C\u0631\u0627\u0621.</strong>";
+        }
+
+        if (cancel) {
+            cancel.textContent = "\u0625\u0644\u063A\u0627\u0621";
+        }
+
+        if (confirm) {
+            confirm.textContent =
+                "\u0646\u0639\u0645\u060C \u0627\u062D\u0630\u0641 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A";
+        }
+    }
+});
+</script>
+</body>
+</html>
+
+

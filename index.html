@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رَبطة | شاركنا رأيك</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.rbta-logo-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:18px;
+}
+
+.rbta-logo{
+    width:110px;
+    height:110px;
+    object-fit:contain;
+    display:none;
+}
+
+.logo-picker-label{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:9px 14px;
+    border-radius:12px;
+    background:#f4f3f0;
+    color:#222;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid #e5e2dc;
+    margin-bottom:10px;
+}
+
+.logo-picker-label:hover{
+    background:#ebe9e4;
+}
+
+#logoInput{
+    display:none;
+}
+</style>
+</head>
+<body>
+<div id="rbta-final-logo" style="text-align:center;margin:0 auto 20px;">
+    <img
+        src="rbta-logo.png"
+        alt="RBTA"
+        style="width:105px;height:105px;object-fit:contain;display:block;margin:0 auto;"
+    >
+</div>
+<header class="nav"><div class="brand"><div class="logo">رَبطة</div><span>@rbta.ps</span></div></header>
+<main>
+<section class="hero"><span class="eyebrow">رَبطة ✦</span><h1>شاركنا رأيك</h1><p>رأيك يساعدنا على تطوير رَبطة وتحسين تجربتك.</p></section>
+<section class="card">
+<form id="survey">
+<label>👤 الاسم <small>(اختياري)</small><input name="name" maxlength="80" placeholder="اكتب اسمك"></label>
+<fieldset><legend>⭐ كيف تقيّم فكرة رَبطة بشكل عام؟</legend>
+<div class="choices">
+<label><input required type="radio" name="idea" value="5"><span>ممتازة</span></label>
+<label><input type="radio" name="idea" value="4"><span>جيدة جدًا</span></label>
+<label><input type="radio" name="idea" value="3"><span>جيدة</span></label>
+<label><input type="radio" name="idea" value="2"><span>مقبولة</span></label>
+<label><input type="radio" name="idea" value="1"><span>تحتاج تطوير</span></label>
+</div></fieldset>
+<fieldset><legend>📱 كيف تقيّم سهولة استخدام المنصة؟</legend>
+<div class="stars" id="stars">
+<button type="button" data-v="1">★</button><button type="button" data-v="2">★</button><button type="button" data-v="3">★</button><button type="button" data-v="4">★</button><button type="button" data-v="5">★</button>
+</div><input type="hidden" name="usability" id="usability" required></fieldset>
+<label>✨ ما أكثر شيء أعجبك في رَبطة؟<textarea name="liked" rows="4" maxlength="1000" placeholder="اكتب رأيك..."></textarea></label>
+<label>🛠️ ما الذي تقترح تطويره أو إضافته؟<textarea name="improve" rows="4" maxlength="1000" placeholder="اقتراحك يهمنا..."></textarea></label>
+<label>💬 هل لديك أي ملاحظات أخرى؟<textarea name="notes" rows="4" maxlength="1000" placeholder="أي ملاحظة إضافية..."></textarea></label>
+<button class="submit" type="submit">إرسال رأيي ✦</button>
+<div id="msg" class="msg"></div>
+</form>
+</section>
+<section class="follow"><h2>اكتشف رَبطة وتابعنا 📱</h2><p>Instagram: <b>@rbta.ps</b></p><div class="links"><a href="https://www.instagram.com/rbta.ps/" target="_blank" rel="noopener">Instagram ↗</a></div></section>
+</main>
+<footer>شكرًا لمساهمتك في تطوير رَبطة 🤍</footer>
+<script src="/app.js"></script>
+<script>
+function selectRbtaLogo(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    if(!file.type.startsWith("image/")){
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const logo = document.getElementById("rbtaLogo");
+
+        logo.src = e.target.result;
+        logo.style.display = "block";
+
+        localStorage.setItem(
+            "rbtaSurveyLogo",
+            e.target.result
+        );
+    };
+
+    reader.readAsDataURL(file);
+}
+
+window.addEventListener("DOMContentLoaded", function(){
+
+    const savedLogo =
+        localStorage.getItem("rbtaSurveyLogo");
+
+    if(savedLogo){
+
+        const logo =
+            document.getElementById("rbtaLogo");
+
+        logo.src = savedLogo;
+        logo.style.display = "block";
+    }
+
+});
+</script>
+</body></html>
